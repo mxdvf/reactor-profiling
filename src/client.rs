@@ -222,8 +222,7 @@ fn flush_results(
 
     let mut writer = BufWriter::new(File::create(filename)?);
 
-    let request_throughput_rps =
-        completed_within_run as f64 / config.run_duration.as_secs_f64();
+    let request_throughput_rps = completed_within_run as f64 / config.run_duration.as_secs_f64();
 
     let message_throughput_mps = request_throughput_rps * 2.0;
 
@@ -252,6 +251,10 @@ pub async fn client(
     server: String,
     mut payload: HashMap<String, serde_json::Value>,
 ) {
+    std::thread::sleep(
+        Duration::from_millis(3000) + Duration::from_millis(rand::rng().random_range(0..2000)),
+    );
+
     let workload: Workload =
         serde_json::from_value(payload.remove("workload").expect("missing workload"))
             .expect("invalid workload");
