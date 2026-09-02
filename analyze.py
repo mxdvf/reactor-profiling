@@ -507,7 +507,8 @@ def main():
 
     for result in results:
         print(
-            f"C={result['concurrency']:>5} | "
+            f"TC={result['total_concurrency']:>5} | "
+            f"CPC={result['concurrency']:>5} | "
             f"clients={result['client_count']:>3} | "
             f"throughput="
             f"{result['request_throughput_rps']:>15,.2f} req/s | "
