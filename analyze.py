@@ -291,12 +291,12 @@ def plot_results(results):
         )
 
     throughput = [
-        result["request_throughput_rps"]
+        result["request_throughput_rps"] / 1000
         for result in results
     ]
 
     latency = [
-        result["average_latency_us"]
+        result["average_latency_us"] / 1000
         for result in results
     ]
 
@@ -318,11 +318,11 @@ def plot_results(results):
     for result in results:
         x = result[
             "request_throughput_rps"
-        ]
+        ] / 1000
 
         y = result[
             "average_latency_us"
-        ]
+        ] / 1000
 
         concurrency = result[
             "concurrency"
@@ -336,11 +336,11 @@ def plot_results(results):
         )
 
     plt.xlabel(
-        "Aggregate throughput (requests/sec)"
+        "Throughput (1000 ops/sec)"
     )
 
     plt.ylabel(
-        "Average latency (µs)"
+        "Average latency (ms)"
     )
 
     plt.title(
