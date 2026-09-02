@@ -28,7 +28,7 @@ node: build
 	reactor_nctrl --port 3000 target/release
 
 job:
-	reactor_jctrl ./cr.toml
+	reactor_jctrl ./profile.toml
 
 clean:
 	cargo uninstall reactor_nctrl || true

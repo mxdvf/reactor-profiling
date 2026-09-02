@@ -23,7 +23,7 @@ actor_name = "server1"
 
 [[placement.client]]
 nodename = "node2"
-actor_name = "Client_A"
+actor_name = "Client_"
 replicas = 10
 server = "server1"
 
