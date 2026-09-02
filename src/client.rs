@@ -1,4 +1,5 @@
 use crate::common::{Msg, Request};
+use rand::Rng;
 use reactor_actor::codec::BincodeCodec;
 use reactor_actor::{BehaviourBuilder, RouteTo, RuntimeCtx, SendErrAction};
 use serde::Deserialize;
