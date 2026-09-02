@@ -30,6 +30,10 @@ node: build
 job:
 	reactor_jctrl ./profile.toml
 
+analyze:
+	python3 -m venv .venv || true
+	.venv/bin/python3 analyze.py
+
 clean:
 	cargo uninstall reactor_nctrl || true
 	cargo uninstall reactor_jctrl || true
