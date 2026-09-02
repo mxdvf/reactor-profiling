@@ -16,11 +16,15 @@ pub struct Workload {
     pub concurrency: usize,
 
     #[serde(default)]
+    pub warmup_duration: u64,
+
+    #[serde(default)]
     pub run_duration: u64,
 }
 
 pub struct WorkloadConfig {
     pub concurrency: usize,
+    pub warmup_duration: Duration,
     pub run_duration: Duration,
 }
 
@@ -28,6 +32,7 @@ impl WorkloadConfig {
     fn new(workload: Workload) -> Self {
         Self {
             concurrency: workload.concurrency,
+            warmup_duration: Duration::from_secs(workload.warmup_duration),
             run_duration: Duration::from_secs(workload.run_duration),
         }
     }
@@ -235,24 +240,36 @@ impl Processor {
             .start_time
             .expect("Response received before benchmark started");
 
-        let completed_inside_measurement_window =
-            completion_time.duration_since(start_time) < self.config.run_duration;
+        let elapsed = completion_time.duration_since(start_time);
+        let measurement_end = self.config.warmup_duration + self.config.run_duration;
 
         /*
-         * Only operations completing inside the measurement window
-         * contribute to throughput and average latency.
+         * WARMUP PHASE
          *
-         * Drain-phase responses do not.
+         * Keep the closed loop completely active,
+         * but do NOT record throughput or latency.
          */
-        if completed_inside_measurement_window {
+        if elapsed < self.config.warmup_duration {
+            let replacement_send_time = Instant::now();
+
+            self.send_times[slot_id] = Some(replacement_send_time);
+
+            self.generated_requests += 1;
+            self.outstanding_requests += 1;
+
+            return vec![make_request(&self.client_addr, slot_id)];
+        }
+
+        /*
+         * MEASUREMENT PHASE
+         *
+         * These are the ONLY responses that count
+         * toward throughput and average latency.
+         */
+        if elapsed < measurement_end {
             self.completed_within_run += 1;
             self.total_latency_ns += latency_ns;
 
-            /*
-             * Response releases one closed-loop slot.
-             *
-             * Immediately reuse the SAME slot for the next request.
-             */
             let replacement_send_time = Instant::now();
 
             self.send_times[slot_id] = Some(replacement_send_time);

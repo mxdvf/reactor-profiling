@@ -30,3 +30,4 @@ server = "server1"
 [placement.client.workload]
 concurrency = 64
 run_duration = 60
+warmup_duration = 5
