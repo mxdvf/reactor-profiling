@@ -1,0 +1,31 @@
+[[ops]]
+name = "client"
+lib_name = "chainpaxos"
+
+[[ops]]
+name = "server"
+lib_name = "chainpaxos"
+
+[[nodes]]
+name = "node1"
+hostname = "10.237.23.233"
+port = 3000
+
+name = "node2"
+hostname = "10.237.23.148"
+port = 3000
+
+[placement]
+[[placement.server]]
+nodename = "node1"
+actor_name = "server1"
+
+[[placement.client]]
+nodename = "node2"
+actor_name = "Client_A"
+replicas = 10
+server = "server1"
+
+[placement.client.workload]
+concurrency = 64
+run_duration = 60
