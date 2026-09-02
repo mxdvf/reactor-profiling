@@ -10,9 +10,12 @@ impl reactor_actor::ActorProcess for Processor {
 
     fn process(&mut self, input: Self::IMsg) -> Vec<Self::OMsg> {
         match input {
-            Msg::Request(request) => vec![Msg::Response(Response {
-                client_addr: request.client_addr,
-            })],
+            Msg::Request(request) => {
+                vec![Msg::Response(Response {
+                    client_addr: request.client_addr,
+                    payload: request.payload,
+                })]
+            }
 
             Msg::Response(_) => {
                 panic!("Server received a response message")
