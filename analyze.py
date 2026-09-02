@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import csv
-import json
 import re
 from pathlib import Path
 
@@ -13,8 +12,6 @@ import matplotlib.pyplot as plt
 # =============================================================================
 
 INTERMEDIATE_DIR = Path("logs/intermediate")
-
-CACHE_FILE = Path("logs/benchmark_cache.json")
 
 COMBINED_FILE = Path(
     "logs/combined_latency_throughput.csv"
@@ -28,37 +25,6 @@ GRAPH_FILE = Path(
 FILE_PATTERN = re.compile(
     r"client_.+_(\d+)conc\.csv$"
 )
-
-
-# =============================================================================
-# Cache
-# =============================================================================
-
-def load_cache():
-    if not CACHE_FILE.exists():
-        return {"files": {}}
-
-    try:
-        with CACHE_FILE.open("r") as f:
-            return json.load(f)
-
-    except (OSError, json.JSONDecodeError):
-        print("Invalid cache; rebuilding.")
-        return {"files": {}}
-
-
-def save_cache(cache):
-    CACHE_FILE.parent.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
-
-    with CACHE_FILE.open("w") as f:
-        json.dump(
-            cache,
-            f,
-            indent=2,
-        )
 
 
 # =============================================================================
@@ -131,51 +97,10 @@ def read_result_file(path):
 
 
 # =============================================================================
-# Cached reading
-# =============================================================================
-
-def get_result(path, cache):
-    stat = path.stat()
-
-    key = str(path.resolve())
-
-    size = stat.st_size
-    mtime_ns = stat.st_mtime_ns
-
-    cached = cache["files"].get(key)
-
-    if cached is not None:
-        if (
-            cached.get("size") == size
-            and
-            cached.get("mtime_ns") == mtime_ns
-        ):
-            return cached["result"], True
-
-    result = read_result_file(path)
-
-    cache["files"][key] = {
-        "size": size,
-        "mtime_ns": mtime_ns,
-        "result": result,
-    }
-
-    return result, False
-
-
-# =============================================================================
 # Collect all intermediate files
 # =============================================================================
-
 def collect_results():
-    cache = load_cache()
-
     grouped = {}
-
-    parsed_count = 0
-    cached_count = 0
-
-    existing_files = set()
 
     files = sorted(
         INTERMEDIATE_DIR.glob(
@@ -189,6 +114,8 @@ def collect_results():
             f"{INTERMEDIATE_DIR}"
         )
 
+    parsed_count = 0
+
     for path in files:
         match = FILE_PATTERN.match(
             path.name
@@ -197,21 +124,8 @@ def collect_results():
         if match is None:
             continue
 
-        absolute_path = str(
-            path.resolve()
-        )
-
-        existing_files.add(
-            absolute_path
-        )
-
         try:
-            result, was_cached = (
-                get_result(
-                    path,
-                    cache,
-                )
-            )
+            result = read_result_file(path)
 
         except Exception as exc:
             print(
@@ -219,43 +133,20 @@ def collect_results():
             )
             continue
 
-        if was_cached:
-            cached_count += 1
-        else:
-            parsed_count += 1
+        parsed_count += 1
 
-        concurrency = (
-            result["concurrency"]
-        )
+        concurrency = result["concurrency"]
 
         grouped.setdefault(
             concurrency,
             [],
         ).append(result)
 
-    # /*
-    #  * Remove stale cache entries.
-    #  */
-
-    stale = [
-        key
-        for key in cache["files"]
-        if key not in existing_files
-    ]
-
-    for key in stale:
-        del cache["files"][key]
-
-    save_cache(cache)
-
     print(
-        f"CSV files: "
-        f"{cached_count} cached, "
-        f"{parsed_count} parsed"
+        f"CSV files parsed: {parsed_count}"
     )
 
     return grouped
-
 
 # =============================================================================
 # Aggregate clients belonging to the same concurrency
