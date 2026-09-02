@@ -396,10 +396,13 @@ def main():
         "-" * 90
     )
 
-    for result in results:
+    for result in sorted(
+        results,
+        key=lambda r: r["total_concurrency"],
+    ):
         print(
             f"TC={result['total_concurrency']:>5} | "
-            f"CPC={result['concurrency']:>5} | "
+            f"PCC={result['concurrency']:>5} | "
             f"clients={result['client_count']:>3} | "
             f"throughput="
             f"{result['request_throughput_rps']:>15,.2f} req/s | "
