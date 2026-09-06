@@ -13,7 +13,7 @@ impl reactor_actor::ActorProcess for Processor {
             Msg::Request(request) => {
                 vec![Msg::Response(Response {
                     client_addr: request.client_addr,
-                    payload: request.payload,
+                    slot_id: request.slot_id,
                 })]
             }
 

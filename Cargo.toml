@@ -18,4 +18,5 @@ tokio = { version = "1", features = ["rt-multi-thread"] }
 lazy_static = "1"
 reactor_actor = { package = "reactor-actor", git = "https://github.com/mxdvf/reactor" }
 reactor_macros = { package = "reactor-macros", git = "https://github.com/mxdvf/reactor" }
+base-client = { path = "base-client" }
 rand = "0.9"
