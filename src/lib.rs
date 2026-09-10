@@ -1,5 +1,5 @@
 mod client;
-mod common;
+pub mod common;
 mod server;
 
 use crate::client::client as client_behaviour;

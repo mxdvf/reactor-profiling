@@ -7,8 +7,8 @@ edition = "2024"
 debug = true
 
 [lib]
-name = "chainpaxos"
-crate-type = ["cdylib"]
+name = "profiler"
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 bincode = { version = "2", features = ["derive"] }
@@ -20,3 +20,4 @@ reactor_actor = { package = "reactor-actor", git = "https://github.com/mxdvf/rea
 reactor_macros = { package = "reactor-macros", git = "https://github.com/mxdvf/reactor" }
 base-client = { path = "base-client" }
 rand = "0.9"
+tokio-util = { version = "0.7.19", features = ["codec"] }
