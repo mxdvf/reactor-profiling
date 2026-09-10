@@ -11,7 +11,6 @@ use tokio_util::{
 
 fn main() {
     let sample = Msg::Request(Request {
-        client_addr: "127.0.0.1:8000".to_owned(),
         key: 1_000_000,
         value: 9_000_000,
         slot_id: 1023,

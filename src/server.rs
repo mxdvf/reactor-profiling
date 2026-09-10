@@ -1,18 +1,11 @@
-use crate::common::Msg;
+use crate::common::{Msg, Response};
 use reactor_actor::codec::BincodeCodec;
 use reactor_actor::{ActorProcess, ActorRecv, BehaviourBuilder, ChannelAction, RuntimeCtx};
 use std::time::{Duration, Instant};
 
-struct Processor;
-
-impl ActorProcess for Processor {
-    type IMsg = Msg;
-    type OMsg = Msg;
-
-    fn process(&mut self, _: Msg) -> Vec<Msg> {
-        vec![]
-    }
-}
+// //////////////////////////////////////////////////////////////////////////////
+//                                  RECEIVER
+// //////////////////////////////////////////////////////////////////////////////
 
 #[derive(Default)]
 struct Receiver {
@@ -40,13 +33,44 @@ impl ActorRecv for Receiver {
     }
 }
 
+// //////////////////////////////////////////////////////////////////////////////
+//                                  PROCESSOR
+// //////////////////////////////////////////////////////////////////////////////
+
+struct Processor;
+
+impl ActorProcess for Processor {
+    type IMsg = Msg;
+    type OMsg = Msg;
+
+    fn process(&mut self, input: Msg) -> Vec<Msg> {
+        match input {
+            Msg::Request(request) => {
+                vec![Msg::Response(Response {
+                    slot_id: request.slot_id,
+                })]
+            }
+            _ => {
+                panic!("Server received a response message")
+            }
+        }
+    }
+}
+
+// //////////////////////////////////////////////////////////////////////////////
+//                                  SENDER
+// //////////////////////////////////////////////////////////////////////////////
+
 struct Sender;
 
 impl reactor_actor::ActorSend for Sender {
     type OMsg = Msg;
 
-    async fn before_send<'a>(&'a mut self, _: &Self::OMsg) -> reactor_actor::RouteTo<'a> {
-        panic!("Should not reach here");
+    async fn before_send<'a>(&'a mut self, output: &Self::OMsg) -> reactor_actor::RouteTo<'a> {
+        match output {
+            Msg::Response(_) => reactor_actor::RouteTo::Reply,
+            _ => panic!("Server tried sending a request message"),
+        }
     }
 }
 
