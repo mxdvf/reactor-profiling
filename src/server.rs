@@ -29,9 +29,9 @@ impl ActorRecv for Receiver {
             let started = self.started.get_or_insert_with(Instant::now);
             self.received += 1;
 
-            if started.elapsed() >= Duration::from_secs(5) {
+            if started.elapsed() >= Duration::from_secs(60) {
                 println!("Requests received in ~60s: {}", self.received);
-                println!("Throughput is: {}", self.received / 5);
+                println!("Throughput is: {}", self.received / 60);
                 self.reported = true;
             }
         }
