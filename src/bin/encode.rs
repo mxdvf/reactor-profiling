@@ -42,7 +42,7 @@ fn main() {
 }
 
 // Encoding one message at a time for 60 seconds...
-// Total encodes: 499404823
+// Total encodes: 1392994266
 // Elapsed: 60.000 seconds
-// Encodes/sec: 8_323_414
-// ns/encode: 120.14
+// Encodes/sec: 23_216_571
+// ns/encode: 43.07

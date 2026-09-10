@@ -50,7 +50,8 @@ fn main() {
     println!("ns/decode: {:.2}", elapsed * 1e9 / count as f64);
 }
 
-// Total decodes: 311378308
+// Decoding one message at a time for 60 seconds...
+// Total decodes: 819929583
 // Elapsed: 60.000 seconds
-// Decodes/sec: 5_189_638
-// ns/decode: 192.69
+// Decodes/sec: 13_665_493
+// ns/decode: 73.18
