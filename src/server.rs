@@ -51,7 +51,6 @@ impl reactor_actor::ActorSend for Sender {
 }
 
 pub async fn server(ctx: RuntimeCtx) {
-    println!("yo1?");
     BehaviourBuilder::new(Processor, BincodeCodec::default())
         .recv(Receiver::default())
         .send(Sender)
@@ -59,5 +58,4 @@ pub async fn server(ctx: RuntimeCtx) {
         .run(ctx)
         .await
         .unwrap();
-    println!("yo2?");
 }
