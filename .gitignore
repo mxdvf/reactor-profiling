@@ -1,2 +1,5 @@
 /target
 /reactor
+*.svg
+.venv/
+logs/
