@@ -34,3 +34,9 @@ pub enum Msg {
     Request(Request),
     Response(Response),
 }
+
+impl Default for Msg {
+    fn default() -> Self {
+        Msg::Request(Request::default())
+    }
+}
