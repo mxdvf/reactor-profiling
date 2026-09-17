@@ -1,10 +1,10 @@
 [[ops]]
 name = "client"
-lib_name = "chainpaxos"
+lib_name = "profiler"
 
 [[ops]]
 name = "server"
-lib_name = "chainpaxos"
+lib_name = "profiler"
 
 [[nodes]]
 name = "node1"
@@ -28,6 +28,6 @@ replicas = 10
 server = "server1"
 
 [placement.client.workload]
-concurrency = 2048
+concurrency = 4000
 run_duration = 60
 warmup_duration = 5
