@@ -12,7 +12,6 @@ impl reactor_actor::ActorProcess for Processor {
         match input {
             Msg::Request(request) => {
                 vec![Msg::Response(Response {
-                    client_addr: request.client_addr,
                     slot_id: request.slot_id,
                 })]
             }
@@ -31,7 +30,7 @@ impl reactor_actor::ActorSend for Sender {
 
     async fn before_send<'a>(&'a mut self, output: &Self::OMsg) -> RouteTo<'a> {
         match output {
-            Msg::Response(response) => RouteTo::from(response.client_addr.clone()),
+            Msg::Response(_) => RouteTo::Reply,
 
             Msg::Request(_) => {
                 panic!("Server tried to send a request message")

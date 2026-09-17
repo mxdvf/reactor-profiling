@@ -3,7 +3,6 @@ use reactor_macros::{DefaultPrio, Msg as DeriveMsg};
 
 #[derive(Encode, Decode, Debug, Clone)]
 pub struct Request {
-    pub client_addr: String,
     pub key: u64,
     pub value: u64,
     pub slot_id: usize,
@@ -11,7 +10,6 @@ pub struct Request {
 
 #[derive(Encode, Decode, Debug, Clone)]
 pub struct Response {
-    pub client_addr: String,
     pub slot_id: usize,
 }
 

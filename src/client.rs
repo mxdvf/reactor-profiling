@@ -11,9 +11,8 @@ use std::collections::HashMap;
 //                                  REQUEST GENERATOR
 // //////////////////////////////////////////////////////////////////////////////
 
-fn make_request(client_addr: &str, slot_id: usize) -> Msg {
+fn make_request(_: &str, slot_id: usize) -> Msg {
     Msg::Request(Request {
-        client_addr: client_addr.to_string(),
         key: slot_id as u64,
         value: 0,
         slot_id,
